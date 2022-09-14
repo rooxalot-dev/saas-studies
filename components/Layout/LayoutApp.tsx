@@ -1,6 +1,5 @@
-import LinkMenu from "@components/Link/LinkMenu";
 import { NextPage } from "next";
-import Link from "next/link";
+import LinkMenu from "@components/LinkMenu";
 
 type LayoutProps = {
   children: React.ReactNode;

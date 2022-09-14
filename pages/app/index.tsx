@@ -1,19 +1,17 @@
-import Seo from '@components/Seo';
 import { NextPage } from 'next';
 
-// import { Container } from './styles';
+import Seo from '@components/Seo';
+import Subtitle from '@components/Subtitle';
+import Title from '@components/Title';
+import Container from '@components/Container';
 
 const App: NextPage = () => {
   return (
     <>
       <Seo title={`My SAAS - Adm`} />
-      <div className="overflow-auto h-screen pb-24 px-4 md:px-6">
-        <h1 className="text-4xl font-semibold text-gray-800 light:text-white">
-          Good afternoon, Charlie
-        </h1>
-        <h2 className="text-md text-gray-400">
-          Here's what's happening with your ambassador account today.
-        </h2>
+      <Container>
+        <Title title='Bem vindo DevIO' />
+        <Subtitle subtitle='Gerencie aqui sua conta' />
         <div className="flex my-6 items-center w-full space-y-4 md:space-x-4 md:space-y-0 flex-col md:flex-row">
           <div className="w-full md:w-6/12">
             <div className="shadow-lg w-full bg-white light:bg-gray-700 relative overflow-hidden">
@@ -487,7 +485,7 @@ const App: NextPage = () => {
             </div>
           </div>
         </div>
-      </div>
+      </Container>
     </>
   );
 }

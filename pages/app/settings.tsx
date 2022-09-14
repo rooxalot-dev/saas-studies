@@ -1,8 +1,16 @@
 import { NextPage } from 'next';
-import React from 'react';
+
+import Container from '@components/Container';
+import Subtitle from '@components/Subtitle';
+import Title from '@components/Title';
 
 const Settings: NextPage = () => {
-  return <h1>Settings</h1>;
+  return (
+    <Container>
+      <Title title='Configurações' />
+      <Subtitle subtitle='Configurações' />
+    </Container>
+  );
 }
 
 export default Settings;
