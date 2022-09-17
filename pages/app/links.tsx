@@ -15,6 +15,10 @@ type NewLinkForm = {
 };
 
 const Links: NextPage = () => {
+  const handleNewLink = (newLink: NewLinkForm) => {
+    console.log('NewLinkForm Data', newLink);
+  };
+
   return (
     <Container>
       <div className='grid grid-cols-1 md:grid-cols-2'>
@@ -37,7 +41,7 @@ const Links: NextPage = () => {
       <div className="container leading-loose mt-10">
         <Form
           formDataType={{} as NewLinkForm}
-          formSubmit={(data: NewLinkForm) => console.log('NewLinkForm Data', data)}
+          formSubmit={(data: NewLinkForm) => handleNewLink(data)}
           className="p-10 m-auto bg-white bg-opacity-25 rounded shadow-xl"
         >
           <p className="mb-8 text-2xl font-light text-center text-black">
