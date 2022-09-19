@@ -7,11 +7,13 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "db:local": "docker run --name my-saas -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=123456 -e POSTGRES_DB=my_saas -e PGDATA=/var/lib/postgresql/data/pgdata -v /tmp/db:/var/lib/postgresql/data/pgdata -p 5432:5432 -d postgres:14.1-alpine"
+    "db:windows:local": "docker run --name my-saas -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=123456 -e POSTGRES_DB=my_saas -e PGDATA=/var/lib/postgresql/data/pgdata -v %cd%\\tmp\\db:/var/lib/postgresql/data/pgdata -p 5432:5432 -d postgres:14.1-alpine",
+    "db:local": "docker run --name my-saas -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=123456 -e POSTGRES_DB=my_saas -e PGDATA=/var/lib/postgresql/data/pgdata -v $(pwd)/tmp/db:/var/lib/postgresql/data/pgdata -p 5432:5432 -d postgres:14.1-alpine"
   },
   "dependencies": {
     "@prisma/client": "^4.3.1",
     "next": "12.2.5",
+    "next-auth": "^4.10.3",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-hook-form": "^7.35.0"
