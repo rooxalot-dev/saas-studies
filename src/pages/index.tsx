@@ -16,8 +16,8 @@ const Home: NextPage = () => {
         <h1 className='mt-10 text-3xl font-bold'>Hello!</h1>
 
         <ul className='block text-center pt-10'>
-          <li><Link href={'/app'}>Adm</Link></li>
-          <li><Link href={'/DevIO'}>DevIO Tenant</Link></li>
+          <li><Link href={'/app/1'}>Adm</Link></li>
+          <li><Link href={'DevIO'}>DevIO Tenant</Link></li>
         </ul>
         <p>
           <Auth />

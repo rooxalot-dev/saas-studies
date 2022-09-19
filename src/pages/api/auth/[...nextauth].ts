@@ -110,8 +110,35 @@ export default NextAuth({
   callbacks: {
     // async signIn({ user, account, profile, email, credentials }) { return true },
     // async redirect({ url, baseUrl }) { return baseUrl },
-    // async session({ session, token, user }) { return session },
-    // async jwt({ token, user, account, profile, isNewUser }) { return token }
+    async jwt({ token, user, account, profile, isNewUser }) {
+      if (user && isNewUser) {
+        //create new tenant
+        const existingTenant = await prisma.tenant.findFirst({
+          where: {
+            users: { some: { userId: user?.id } }
+          }
+        });
+        if (!existingTenant) {
+          const newTenant = await prisma.tenant.create({
+            data: {
+              name: 'My-Tenant',
+              slug: 'mytenant',
+              plan: 'FREE',
+              users: {
+                create: {
+                  userId: user?.id ?? '',
+                }
+              },
+            }
+          });
+
+          user.tenantId = newTenant.id;
+        }
+      }
+
+      return token;
+    },
+    //async session({ session, token, user }) { return session; },
   },
 
   // Events are useful for logging
