@@ -1,12 +1,14 @@
 import '../styles/globals.css'
+
 import type { AppProps } from 'next/app'
 import { useRouter } from 'next/router'
+import { SessionProvider } from "next-auth/react"
 
 import LayoutApp from '@components/Layout/LayoutApp';
 import LayoutTenant from '@components/Layout/LayoutTenant';
 import LayoutPublic from '@components/Layout/LayoutPublic';
 
-function MyApp({ Component, pageProps }: AppProps) {
+function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps) {
   const { pathname } = useRouter();
   let Layout = LayoutPublic;
 
@@ -19,9 +21,11 @@ function MyApp({ Component, pageProps }: AppProps) {
   }
 
   return (
-    <Layout>
-      <Component {...pageProps} />
-    </Layout>
+    <SessionProvider session={session}>
+      <Layout>
+        <Component {...pageProps} />
+      </Layout>
+    </SessionProvider>
   )
 }
 

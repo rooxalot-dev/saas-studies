@@ -5,6 +5,8 @@ import styles from '../styles/Home.module.css'
 
 import Seo from '@components/Seo'
 
+import { useSession, signIn, signOut } from "next-auth/react"
+
 const Home: NextPage = () => {
   return (
     <>
@@ -17,7 +19,29 @@ const Home: NextPage = () => {
           <li><Link href={'/app'}>Adm</Link></li>
           <li><Link href={'/DevIO'}>DevIO Tenant</Link></li>
         </ul>
+        <p>
+          <Auth />
+        </p>
       </div>
+    </>
+  )
+}
+
+export function Auth() {
+  const { data: session } = useSession();
+  if (session) {
+    console.log('User Session', session);
+    return (
+      <>
+        Signed in as {session.user?.name} ({session.user?.email}) <br />
+        <button onClick={() => signOut()}>Sign out</button>
+      </>
+    )
+  }
+  return (
+    <>
+      Not signed in <br />
+      <button onClick={() => signIn()}>Sign in</button>
     </>
   )
 }
