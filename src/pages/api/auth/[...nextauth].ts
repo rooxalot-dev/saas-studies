@@ -3,6 +3,7 @@ import GithubProvider from "next-auth/providers/github"
 import { PrismaAdapter } from "@next-auth/prisma-adapter"
 
 import prisma from "src/libs/prisma"
+import { createTenantForNewUser } from "src/services/tenantService"
 
 // For more information on each option (and a full list of options) go to
 // https://next-auth.js.org/configuration/options
@@ -111,34 +112,25 @@ export default NextAuth({
     // async signIn({ user, account, profile, email, credentials }) { return true },
     // async redirect({ url, baseUrl }) { return baseUrl },
     async jwt({ token, user, account, profile, isNewUser }) {
-      if (user && isNewUser) {
-        //create new tenant
-        const existingTenant = await prisma.tenant.findFirst({
-          where: {
-            users: { some: { userId: user?.id } }
-          }
-        });
-        if (!existingTenant) {
-          const newTenant = await prisma.tenant.create({
-            data: {
-              name: 'My-Tenant',
-              slug: 'mytenant',
-              plan: 'FREE',
-              users: {
-                create: {
-                  userId: user?.id ?? '',
-                }
-              },
-            }
-          });
-
-          user.tenantId = newTenant.id;
+      if (user) {
+        if (isNewUser) {
+          const tenant = await createTenantForNewUser(user);
+          user.tenantId = tenant.id;
         }
+        token.uid = user.id;
       }
 
       return token;
     },
-    //async session({ session, token, user }) { return session; },
+    async session({ session, token, user }) {
+      if (session?.user) {
+        //@ts-ignore
+        session.user.id = token.uid;
+      }
+
+      console.log('Session', session);
+      return session;
+    },
   },
 
   // Events are useful for logging

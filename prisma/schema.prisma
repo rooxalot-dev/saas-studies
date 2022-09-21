@@ -47,7 +47,7 @@ model User {
   image         String?
   accounts      Account[]
   sessions      Session[]
-  tenants    UserTenant[]
+  tenants       UserTenant[]
 }
 
 model VerificationToken {
@@ -61,23 +61,23 @@ model VerificationToken {
 // ENDS NEXT_AUTH SCHEMA DEFINITION
 
 model Tenant {
-  id         String       @id @default(cuid())
-  name       String       @db.VarChar(255)
-  slug       String
-  plan       String?
-  imageLogo  String?
-  createdAt  DateTime     @default(now()) @db.Timestamp(6)
-  updatedAt  DateTime     @default(now()) @updatedAt
-  users UserTenant[]
+  id        String       @id @default(cuid())
+  name      String       @db.VarChar(255)
+  slug      String
+  plan      String?
+  imageLogo String?
+  createdAt DateTime     @default(now()) @db.Timestamp(6)
+  updatedAt DateTime     @default(now()) @updatedAt
+  users     UserTenant[]
 }
 
 model UserTenant {
   id       String @id @default(cuid())
   userId   String
+  user     User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   tenantId String
-
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  tenant   Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  role     String @default("OWNER") @db.VarChar(100)
 
   @@unique([userId, tenantId])
 }
