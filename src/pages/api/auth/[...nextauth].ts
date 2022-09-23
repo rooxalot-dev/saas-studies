@@ -128,7 +128,6 @@ export default NextAuth({
         session.user.id = token.uid;
       }
 
-      console.log('Session', session);
       return session;
     },
   },

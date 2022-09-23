@@ -41,7 +41,7 @@ export function Auth() {
   return (
     <>
       Not signed in <br />
-      <button onClick={() => signIn()}>Sign in</button>
+      <button onClick={() => signIn(undefined, { callbackUrl: '/app' })}>Sign in</button>
     </>
   )
 }

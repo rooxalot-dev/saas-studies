@@ -1,14 +1,20 @@
 import { NextPage } from "next";
 import LinkMenu from "@components/LinkMenu";
 import { useRouter } from "next/router";
+import { signOut, useSession } from "next-auth/react";
 
 type LayoutProps = {
   children: React.ReactNode;
 }
 
 const LayoutApp: NextPage<LayoutProps> = ({ children }: LayoutProps) => {
+  const { data } = useSession();
   const { query } = useRouter();
   const { tenantId } = query;
+
+  const handleSignOut = async () => {
+    await signOut({ callbackUrl: '/' });
+  };
 
   return (
     <>
@@ -18,7 +24,7 @@ const LayoutApp: NextPage<LayoutProps> = ({ children }: LayoutProps) => {
             <div className="bg-white h-full light:bg-gray-700">
               <div className="flex items-center justify-start pt-6 ml-8">
                 <p className="font-bold light:text-white text-xl">
-                  Plannifer
+                  LinkSr
                 </p>
               </div>
               <nav className="mt-6">
@@ -100,11 +106,11 @@ const LayoutApp: NextPage<LayoutProps> = ({ children }: LayoutProps) => {
                   </button>
                   <span className="w-1 h-8 rounded-lg bg-gray-200">
                   </span>
-                  <a href="#" className="block relative">
-                    <img alt="profil" src="/images/person/1.jpg" className="mx-auto object-cover rounded-full h-10 w-10 " />
-                  </a>
-                  <button className="flex items-center text-gray-500 light:text-white text-md">
-                    Charlie R
+                  <span className="block relative">
+                    <img alt="profile" src={data?.user?.image ?? ''} className="mx-auto object-cover rounded-full h-10 w-10 " />
+                  </span>
+                  <button className="flex items-center text-gray-500 light:text-white text-md" onClick={handleSignOut}>
+                  {data?.user?.name ?? ''}
                     <svg width={20} height={20} className="ml-2 text-gray-400" fill="currentColor" viewBox="0 0 1792 1792" xmlns="http://www.w3.org/2000/svg">
                       <path d="M1408 704q0 26-19 45l-448 448q-19 19-45 19t-45-19l-448-448q-19-19-19-45t19-45 45-19h896q26 0 45 19t19 45z">
                       </path>

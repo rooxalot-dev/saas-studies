@@ -6,9 +6,9 @@ type SubtitleProps = {
 
 const Subtitle: React.FC<SubtitleProps> = ({ subtitle }: SubtitleProps) => {
   return (
-    <h1 className="text-md text-gray-400">
+    <h2 className="text-md text-gray-400">
       {subtitle}
-    </h1>
+    </h2>
   );
 }
 

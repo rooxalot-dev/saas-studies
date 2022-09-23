@@ -1,28 +1,53 @@
 import { NextPage } from 'next';
 import Link from 'next/link';
+import useSWR from 'swr';
 
 import Container from '@components/Container';
 import Subtitle from '@components/Subtitle';
 import Title from '@components/Title';
-import { useEffect, useState } from 'react';
-import { getUserTenants } from 'src/services/tenantService';
-import { useSession } from 'next-auth/react';
 import { Tenant } from '@prisma/client';
+import { defaultFetcher } from '@libs/swr';
+import { useSession } from 'next-auth/react';
+import OutlinedButton from '@components/OutlinedButton';
 
 const Tenants: NextPage = () => {
-  const [tenants, setTenants] = useState<Tenant[]>([]);
+  const { data } = useSession();
+  const { data: tenants, error } = useSWR<Tenant[] | undefined>('/api/tenants', defaultFetcher);
+
+  if (error) return <div>Houve um problema ao carregar os Tenants</div>
+  if (!tenants) return <div>Carregando...</div>
+
+  console.log('tenants', tenants);
 
   return (
     <Container>
-      <Title title='Tenants' />
-      <Subtitle subtitle='Tenants' />
+      <div className='flex flex-col h-full items-center mt-20'>
+        <div className='mt-10'>
 
-      <div>
-        {tenants?.map((tenant) => (
-          <Link key={tenant.id} href={`/app/${tenant.id}`}>
-            {tenant.name}
-          </Link>
-        ))}
+          <div className='mb-5 flex flex-col items-center'>
+            <img
+              className='rounded-full max-h-40'
+              src={data?.user?.image ?? ''}
+              title='User image' />
+          </div>
+
+          <div className='flex flex-col items-center'>
+            <Title title={`Olá ${data?.user?.name ?? ''}`} />
+            <Subtitle subtitle='Selecione um dos Tenants para iniciar'/>
+          </div>
+
+          <div className='mt-5'>
+            {tenants?.map((tenant) => (
+              <div className='text-center mb-2' key={tenant.id}>
+                <OutlinedButton>
+                  <Link href={`/app/${tenant.id}`}>
+                    {tenant.name}
+                  </Link>
+                </OutlinedButton>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     </Container>
   );
