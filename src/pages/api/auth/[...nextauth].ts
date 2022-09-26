@@ -1,13 +1,13 @@
-import NextAuth from "next-auth"
+import NextAuth, { NextAuthOptions } from "next-auth"
 import GithubProvider from "next-auth/providers/github"
 import { PrismaAdapter } from "@next-auth/prisma-adapter"
 
 import prisma from "src/libs/prisma"
-import { createTenantForNewUser } from "src/services/tenantService"
+import { createTenantForNewUser } from "src/server/services/tenantService"
 
 // For more information on each option (and a full list of options) go to
 // https://next-auth.js.org/configuration/options
-export default NextAuth({
+export const nextAuthOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma!),
   // https://next-auth.js.org/configuration/providers
   providers: [
@@ -138,4 +138,6 @@ export default NextAuth({
 
   // Enable debug messages in the console if you are having problems
   debug: false,
-})
+};
+
+export default NextAuth(nextAuthOptions);

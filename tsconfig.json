@@ -15,8 +15,10 @@
     "jsx": "preserve",
     "incremental": true,
     "baseUrl": ".",
+    "strictNullChecks": true,
     "paths": {
       "@libs/*": ["src/libs/*"],
+      "@server/*": ["src/server/*"],
       "@public/*": ["src/public/*"],
       "@pages/*": ["src/pages/*"],
       "@components/*": ["src/components/*"]

@@ -1,23 +1,19 @@
 import { NextPage } from 'next';
 import Link from 'next/link';
-import useSWR from 'swr';
 
 import Container from '@components/Container';
 import Subtitle from '@components/Subtitle';
 import Title from '@components/Title';
-import { Tenant } from '@prisma/client';
-import { defaultFetcher } from '@libs/swr';
 import { useSession } from 'next-auth/react';
 import OutlinedButton from '@components/OutlinedButton';
+import { trpc } from '@libs/trpc';
 
 const Tenants: NextPage = () => {
   const { data } = useSession();
-  const { data: tenants, error } = useSWR<Tenant[] | undefined>('/api/tenants', defaultFetcher);
+  const { data: tenants, error } = trpc.useQuery(['tenants.get-my-tenants']);
 
-  if (error) return <div>Houve um problema ao carregar os Tenants</div>
+  if (error) return <div>Houve um problema ao carregar os Tenants: {error.message}</div>
   if (!tenants) return <div>Carregando...</div>
-
-  console.log('tenants', tenants);
 
   return (
     <Container>
