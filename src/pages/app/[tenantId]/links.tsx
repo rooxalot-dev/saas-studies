@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { NextPage } from 'next';
 import { useRouter } from 'next/router';
 
@@ -12,11 +12,11 @@ import { trpc } from '@libs/trpc';
 import { Loading } from '@components/Loading';
 
 type NewLinkForm = {
-    internalName: string;
-    publicName: string;
-    slug: string;
-    destination: string;
-    appLink: string;
+  internalName: string;
+  publicName: string;
+  slug: string;
+  destination: string;
+  appLink: string;
 };
 
 const Links: NextPage = () => {
@@ -132,7 +132,7 @@ const Links: NextPage = () => {
                 disabled={mutation.isLoading}
                 type="submit"
                 className="py-2 px-4 bg-blue-600 hover:bg-blue-700 focus:ring-blue-500 focus:ring-offset-blue-200 text-white w-full transition ease-in duration-200 text-center flex justify-center items-center text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 rounded-lg ">
-                  { mutation.isLoading ? <Loading /> : 'Save' }
+                {mutation.isLoading ? <Loading /> : 'Save'}
               </button>
             </div>
           </div>

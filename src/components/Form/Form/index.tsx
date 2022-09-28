@@ -16,10 +16,10 @@ const Form = forwardRef(<T extends {}>({ children, formSubmit, formInvalid, clea
         <form
           {...rest}
           ref={ref}
-          onSubmit={(e: FormEvent<any>) => {
-            e.preventDefault();
+          onSubmit={async (e: FormEvent<any>) => {
+            const execute = formMethods.handleSubmit(formSubmit, formInvalid);
+            await execute(e);
 
-            formMethods.handleSubmit(formSubmit, formInvalid);
             if (clearOnSubmit) {
               formMethods.reset();
             }
