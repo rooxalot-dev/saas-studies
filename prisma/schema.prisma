@@ -69,6 +69,7 @@ model Tenant {
   createdAt DateTime     @default(now()) @db.Timestamp(6)
   updatedAt DateTime     @default(now()) @updatedAt
   users     UserTenant[]
+  Link      Link[]
 }
 
 model UserTenant {
@@ -80,4 +81,19 @@ model UserTenant {
   role     String @default("OWNER") @db.VarChar(100)
 
   @@unique([userId, tenantId])
+}
+
+model Link {
+  id           String  @id @default(cuid())
+  internalName  String
+  publicName   String
+  slug         String
+  destination  String
+  internalLink String?
+
+  createdAt DateTime @default(now()) @db.Timestamp(6)
+  updatedAt DateTime @default(now()) @updatedAt
+
+  tenantId String
+  tenant   Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
 }

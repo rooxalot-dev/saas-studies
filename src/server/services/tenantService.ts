@@ -11,8 +11,8 @@ export const createTenantForNewUser = async (user: User | DefaultUser): Promise<
   if (!tenant) {
     const newTenant = await prisma.tenant.create({
       data: {
-        name: 'My-Tenant',
-        slug: 'mytenant',
+        name: 'Dev IO',
+        slug: 'dev-io',
         plan: 'FREE',
         users: {
           create: {

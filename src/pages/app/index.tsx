@@ -7,10 +7,27 @@ import Title from '@components/Title';
 import { useSession } from 'next-auth/react';
 import OutlinedButton from '@components/OutlinedButton';
 import { trpc } from '@libs/trpc';
+import { useEffect } from 'react';
+import { useRouter } from 'next/router';
+import { Tenant } from '@prisma/client';
 
 const Tenants: NextPage = () => {
+  const router = useRouter();
   const { data } = useSession();
   const { data: tenants, error } = trpc.useQuery(['tenants.get-my-tenants']);
+
+  useEffect(() => {
+    const redirectToTenantPage = async (tenant: Tenant) => {
+      await router.push(`app/${tenant.id}`);
+    }
+
+    if (tenants && tenants.length === 1) {
+      const [singleTenant] = tenants;
+      redirectToTenantPage(singleTenant)
+        .then(() => console.log('Redirected to single tenant page'))
+        .catch((error) => console.error('Error redirecting to single tenant page', error));
+    }
+  }, [tenants]);
 
   if (error) return <div>Houve um problema ao carregar os Tenants: {error.message}</div>
   if (!tenants) return <div>Carregando...</div>

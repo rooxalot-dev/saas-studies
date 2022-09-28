@@ -1,10 +1,15 @@
+import { useRef } from 'react';
 import { NextPage } from 'next';
+import { useRouter } from 'next/router';
 
 import Container from '@components/Container';
 import Subtitle from '@components/Subtitle';
 import Title from '@components/Title';
-import Form from '@components/Form/Form';
+import Form, { FormProps } from '@components/Form/Form';
 import { FormInput } from '@components/Form/FormInput';
+
+import { trpc } from '@libs/trpc';
+import { Loading } from '@components/Loading';
 
 type NewLinkForm = {
     internalName: string;
@@ -15,8 +20,16 @@ type NewLinkForm = {
 };
 
 const Links: NextPage = () => {
-  const handleNewLink = (newLink: NewLinkForm) => {
-    console.log('NewLinkForm Data', newLink);
+  const { query } = useRouter();
+  const mutation = trpc.useMutation(['links.save-link']);
+
+  const handleNewLink = async (newLink: NewLinkForm) => {
+    const mutateData = {
+      ...newLink,
+      tenantId: query.tenantId as string ?? '',
+    };
+
+    await mutation.mutateAsync(mutateData);
   };
 
   return (
@@ -42,6 +55,7 @@ const Links: NextPage = () => {
         <Form
           formDataType={{} as NewLinkForm}
           formSubmit={(data: NewLinkForm) => handleNewLink(data)}
+          clearOnSubmit
           className="p-10 m-auto bg-white bg-opacity-25 rounded shadow-xl"
         >
           <p className="mb-8 text-2xl font-light text-center text-black">
@@ -114,8 +128,11 @@ const Links: NextPage = () => {
             </div>
 
             <div className="w-full px-4 pb-4 ml-auto text-gray-500 md:w-1/3">
-              <button type="submit" className="py-2 px-4  bg-blue-600 hover:bg-blue-700 focus:ring-blue-500 focus:ring-offset-blue-200 text-white w-full transition ease-in duration-200 text-center text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2  rounded-lg ">
-                Save
+              <button
+                disabled={mutation.isLoading}
+                type="submit"
+                className="py-2 px-4 bg-blue-600 hover:bg-blue-700 focus:ring-blue-500 focus:ring-offset-blue-200 text-white w-full transition ease-in duration-200 text-center flex justify-center items-center text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 rounded-lg ">
+                  { mutation.isLoading ? <Loading /> : 'Save' }
               </button>
             </div>
           </div>

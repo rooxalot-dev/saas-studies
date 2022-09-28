@@ -1,22 +1,34 @@
-import React, { FormHTMLAttributes } from "react";
+import React, {forwardRef, FormHTMLAttributes, FormEvent } from "react";
 import { useForm, FormProvider, SubmitHandler, SubmitErrorHandler } from "react-hook-form";
 
-type FormProps<T extends {}> = FormHTMLAttributes<HTMLFormElement> & {
+export type FormProps<T extends {}> = FormHTMLAttributes<HTMLFormElement> & {
   formDataType?: T;
   formSubmit: SubmitHandler<T>;
   formInvalid?: SubmitErrorHandler<T>;
+  clearOnSubmit?: boolean;
 }
 
-const Form = <T extends {}>({ children, formSubmit, formInvalid, ...rest }: FormProps<T>) => {
+const Form = forwardRef(<T extends {}>({ children, formSubmit, formInvalid, clearOnSubmit, ...rest }: FormProps<T>, ref: any) => {
   const formMethods = useForm<T>();
 
   return (
     <FormProvider {...formMethods}>
-        <form {...rest} onSubmit={formMethods.handleSubmit(formSubmit, formInvalid)}>
+        <form
+          {...rest}
+          ref={ref}
+          onSubmit={(e: FormEvent<any>) => {
+            e.preventDefault();
+
+            formMethods.handleSubmit(formSubmit, formInvalid);
+            if (clearOnSubmit) {
+              formMethods.reset();
+            }
+          }}
+        >
         {children}
       </form>
     </FormProvider>
   );
-}
+})
 
 export default Form;
