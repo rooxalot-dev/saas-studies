@@ -11,27 +11,32 @@ import { FormInput } from '@components/Form/FormInput';
 import { trpc } from '@libs/trpc';
 import { Loading } from '@components/Loading';
 
+import { getTenantIdFromRouter } from 'src/common/helpers';
+
 type NewLinkForm = {
   internalName: string;
   publicName: string;
   slug: string;
   destination: string;
-  appLink: string;
+  internalLink: string;
 };
 
 const Links: NextPage = () => {
-  const { query } = useRouter();
+  const router = useRouter();
+  const tenantId = getTenantIdFromRouter(router);
   const mutation = trpc.useMutation(['links.save-link']);
 
   const handleNewLink = async (newLink: NewLinkForm) => {
     const mutateData = {
       ...newLink,
-      tenantId: query.tenantId as string ?? '',
+      tenantId: tenantId,
     };
 
     try {
       await mutation.mutateAsync(mutateData);
-      toast.success('Link salvo com sucesso!');
+      toast.success('Link salvo com sucesso!', {
+        onClose: async () => await router.push(`/app/${tenantId}/links`)
+      });
     } catch (error) {
       toast.error(error.message);
     }
@@ -42,7 +47,7 @@ const Links: NextPage = () => {
       <div className='grid grid-cols-1 md:grid-cols-2'>
         <div className='titles'>
           <Title title='Gerenciador de Links' />
-          <Subtitle subtitle='Gerenciador de Links' />
+          <Subtitle subtitle='Novo Link' />
         </div>
 
         <div className="flex items-center md:justify-self-end">
@@ -123,7 +128,7 @@ const Links: NextPage = () => {
                   <div className=" relative mt-2">
                     <FormInput
                       type="text"
-                      name="appLink"
+                      name="internalLink"
                       className=" rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent"
                       placeholder="TBD Link Interno para app"
                     />

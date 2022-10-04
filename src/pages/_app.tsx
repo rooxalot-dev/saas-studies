@@ -6,6 +6,7 @@ import { useRouter } from 'next/router'
 import { SessionProvider } from "next-auth/react"
 import { withTRPC } from '@trpc/next';
 import { ToastContainer } from 'react-toastify';
+import superjson from 'superjson';
 
 import LayoutApp from '@components/Layout/LayoutApp';
 import LayoutTenant from '@components/Layout/LayoutTenant';
@@ -48,6 +49,7 @@ export default withTRPC<AppRouter>({
       ? `https://${process.env.VERCEL_URL}/api/trpc`
       : 'http://localhost:3000/api/trpc';
     return {
+      //transformer: superjson,
       url,
       /**
        * @link https://react-query.tanstack.com/reference/QueryClient

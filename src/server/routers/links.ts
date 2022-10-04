@@ -38,7 +38,7 @@ export const linkRouter = createRouter()
     resolve: async ({ ctx, input }) => {
       try {
         if (!ctx.session) {
-          return new TRPCError({
+          throw new TRPCError({
             code: 'UNAUTHORIZED',
             message: 'Você precisa estar logado na aplicação para esta operação!'
           });
@@ -48,7 +48,7 @@ export const linkRouter = createRouter()
         return createdLink;
       } catch (error) {
         const errorObj = error as Error;
-        return new TRPCError({
+        throw new TRPCError({
           code: 'BAD_REQUEST',
           message: errorObj.message,
         });
