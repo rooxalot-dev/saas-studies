@@ -10,13 +10,6 @@ export const linkRouter = createRouter()
       tenantId: string().required(),
     }),
     resolve: async ({ ctx, input }) => {
-      if (!ctx.session) {
-        return new TRPCError({
-          code: 'UNAUTHORIZED',
-          message: 'Você precisa estar logado na aplicação para esta operação!'
-        });
-      }
-
       const links = await prisma.link.findMany({
         where: {
           tenantId: input.tenantId,
@@ -37,15 +30,29 @@ export const linkRouter = createRouter()
     }),
     resolve: async ({ ctx, input }) => {
       try {
-        if (!ctx.session) {
-          throw new TRPCError({
-            code: 'UNAUTHORIZED',
-            message: 'Você precisa estar logado na aplicação para esta operação!'
-          });
-        }
-
         const createdLink = await prisma.link.create({ data: input });
         return createdLink;
+      } catch (error) {
+        const errorObj = error as Error;
+        throw new TRPCError({
+          code: 'BAD_REQUEST',
+          message: errorObj.message,
+        });
+      }
+    },
+  })
+  .mutation('delete-link', {
+    input: object({
+      linkId: string().required(),
+    }),
+    resolve: async ({ ctx, input }) => {
+      try {
+        const deletedLink = await prisma.link.delete({
+          where: {
+            id: input.linkId
+          }
+        });
+        return deletedLink;
       } catch (error) {
         const errorObj = error as Error;
         throw new TRPCError({

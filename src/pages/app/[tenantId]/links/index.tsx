@@ -12,10 +12,13 @@ import { trpc } from '@libs/trpc';
 import { Loading } from '@components/Loading';
 
 import { getTenantIdFromRouter } from 'src/common/helpers';
+import { toast } from 'react-toastify';
+import Button from '@components/Button';
 
 const Links: NextPage = () => {
   const tenantId = getTenantIdFromRouter(useRouter());
-  const { isLoading, isError, data } = trpc.useQuery(['links.get-by-tenant', { tenantId: tenantId }]);
+  const { isLoading, isError, refetch, data } = trpc.useQuery(['links.get-by-tenant', { tenantId: tenantId }]);
+  const deleteMuration = trpc.useMutation(['links.delete-link']);
 
   const [links, setLinks] = useState<Link[]>([]);
 
@@ -27,6 +30,18 @@ const Links: NextPage = () => {
     }
   }, [data]);
 
+  const handleDeleteLink = async (linkId: string) => {
+    try {
+      await deleteMuration.mutateAsync({
+        linkId
+      });
+      toast.success('Link removido com sucesso!');
+      refetch();
+    } catch (error) {
+      toast.error(error.message);
+    }
+  };
+
   return (
     <Container>
       <div className='grid grid-cols-1 md:grid-cols-2'>
@@ -37,9 +52,7 @@ const Links: NextPage = () => {
 
         <div className="flex items-center md:justify-self-end">
           <NextLink href={`/app/${tenantId}/links/mutate`}>
-            <button type="button" className="border-l border-t border-b text-base font-medium rounded-md text-black bg-white hover:bg-gray-100 px-4 py-2">
-              Criar Link
-            </button>
+            <Button>Criar Link</Button>
           </NextLink>
         </div>
       </div>
@@ -118,9 +131,7 @@ const Links: NextPage = () => {
                             </p>
                           </td>
                           <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                            <a href="#" className="text-indigo-600 hover:text-indigo-900">
-                              Edit
-                            </a>
+                            <Button onClick={() => handleDeleteLink(link.id)}>Excluir</Button>
                           </td>
                         </tr>
                       ))}
