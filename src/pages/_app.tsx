@@ -1,9 +1,11 @@
 import '../styles/globals.css'
+import 'react-toastify/dist/ReactToastify.min.css';
 
 import type { AppProps } from 'next/app'
 import { useRouter } from 'next/router'
 import { SessionProvider } from "next-auth/react"
 import { withTRPC } from '@trpc/next';
+import { ToastContainer } from 'react-toastify';
 
 import LayoutApp from '@components/Layout/LayoutApp';
 import LayoutTenant from '@components/Layout/LayoutTenant';
@@ -31,6 +33,7 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps) {
       <Layout>
         <Component {...pageProps} />
       </Layout>
+      <ToastContainer />
     </SessionProvider>
   )
 }

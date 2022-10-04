@@ -1,13 +1,13 @@
 import { createRouter } from "@server/createRouter";
-import { z } from "zod";
+import { object, string, number, date, InferType } from 'yup';
 
 import prisma from '@libs/prisma';
 import { TRPCError } from "@trpc/server";
 
 export const linkRouter = createRouter()
   .query('get-by-tenant', {
-    input: z.object({
-      tenantId: z.string(),
+    input: object({
+      tenantId: string().required(),
     }),
     resolve: async ({ ctx, input }) => {
       if (!ctx.session) {
@@ -27,25 +27,31 @@ export const linkRouter = createRouter()
     },
   })
   .mutation('save-link', {
-    input: z.object({
-      tenantId: z.string(),
-      internalName: z.string(),
-      publicName: z.string(),
-      slug: z.string(),
-      destination: z.string(),
-      internalLink: z.string().nullish(),
+    input: object({
+      tenantId: string().required('TenantId obrigatório'),
+      internalName: string().required('Nome interno obrigatório'),
+      publicName: string().required('Nome público obrigatório'),
+      slug: string().required('Slug obrigatório'),
+      destination: string().required('Destino obrigatório'),
+      internalLink: string().optional(),
     }),
     resolve: async ({ ctx, input }) => {
-      console.log('ctx.session', ctx.session);
+      try {
+        if (!ctx.session) {
+          return new TRPCError({
+            code: 'UNAUTHORIZED',
+            message: 'Você precisa estar logado na aplicação para esta operação!'
+          });
+        }
 
-      if (!ctx.session) {
+        const createdLink = await prisma.link.create({ data: input });
+        return createdLink;
+      } catch (error) {
+        const errorObj = error as Error;
         return new TRPCError({
-          code: 'UNAUTHORIZED',
-          message: 'Você precisa estar logado na aplicação para esta operação!'
+          code: 'BAD_REQUEST',
+          message: errorObj.message,
         });
       }
-
-      const createdLink = await prisma.link.create({ data: input });
-      return createdLink;
     },
   })

@@ -1,11 +1,11 @@
-import { useEffect, useRef } from 'react';
 import { NextPage } from 'next';
 import { useRouter } from 'next/router';
+import { toast } from 'react-toastify';
 
 import Container from '@components/Container';
 import Subtitle from '@components/Subtitle';
 import Title from '@components/Title';
-import Form, { FormProps } from '@components/Form/Form';
+import Form from '@components/Form/Form';
 import { FormInput } from '@components/Form/FormInput';
 
 import { trpc } from '@libs/trpc';
@@ -29,7 +29,12 @@ const Links: NextPage = () => {
       tenantId: query.tenantId as string ?? '',
     };
 
-    await mutation.mutateAsync(mutateData);
+    try {
+      await mutation.mutateAsync(mutateData);
+      toast.success('Link salvo com sucesso!');
+    } catch (error) {
+      toast.error(error.message);
+    }
   };
 
   return (
