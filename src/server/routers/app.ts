@@ -1,8 +1,11 @@
+import superjson from 'superjson';
+
 import { createRouter } from '../createRouter';
 import { linkRouter } from './links';
 import { tenantsRouter } from './tenants';
 
 export const appRouter = createRouter()
+  .transformer(superjson)
   .merge('tenants.', tenantsRouter)
   .merge('links.', linkRouter);
 
