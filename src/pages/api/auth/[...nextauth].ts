@@ -3,7 +3,7 @@ import GithubProvider from "next-auth/providers/github"
 import { PrismaAdapter } from "@next-auth/prisma-adapter"
 
 import prisma from "src/libs/prisma"
-import { createTenantForNewUser } from "src/server/services/tenantService"
+import { createTenantForNewUser, getUserTenants } from "src/server/services/tenantService"
 
 // For more information on each option (and a full list of options) go to
 // https://next-auth.js.org/configuration/options
@@ -115,8 +115,12 @@ export const nextAuthOptions: NextAuthOptions = {
       if (user) {
         if (isNewUser) {
           const tenant = await createTenantForNewUser(user);
-          user.tenantId = tenant.id;
+          token.tenantIds = Array.from(tenant.id);
+        } else {
+          const tenants = await getUserTenants(user.id);
+          token.tenantIds = tenants.map((tenant) => tenant.id);
         }
+
         token.uid = user.id;
       }
 
