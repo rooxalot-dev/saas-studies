@@ -15,6 +15,7 @@
     "jsx": "preserve",
     "incremental": true,
     "baseUrl": ".",
+    "strictFunctionTypes": false,
     "strictNullChecks": true,
     "paths": {
       "@libs/*": ["src/libs/*"],
