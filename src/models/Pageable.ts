@@ -1,5 +1,5 @@
 export interface IPageable<T extends {}> {
-  data: T,
+  data: T[],
   totalRecords: number,
   totalPages: number
 }
