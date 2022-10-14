@@ -66,7 +66,7 @@ const Links: NextPage = () => {
           formDataType={{} as NewLinkForm}
           formSubmit={(data: NewLinkForm) => handleNewLink(data)}
           clearOnSubmit
-          className="p-10 m-auto bg-white bg-opacity-25 rounded shadow-xl"
+          className="p-10 m-auto bg-gray-200 bg-opacity-10 rounded shadow-xl"
         >
           <p className="mb-8 text-2xl font-light text-center text-black">
             Criar Link

@@ -84,7 +84,7 @@ const Links: NextPage = () => {
         </div>
       </div>
 
-      <div className="container mx-auto px-4 sm:px-8 ">
+      <div className="container mt-4">
         {isLoading && <Loading />}
         {
           !isLoading && data && <PageableTable
