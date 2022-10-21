@@ -14,7 +14,7 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 ## Runnning the database locally
 
-If yu have Docker installed in your machine, please run the following commands:
+If you have Docker installed in your machine, you can execute the following command to start a local database:
 
 ```bash
 npm run db:local
@@ -22,7 +22,7 @@ npm run db:local
 npm run db:windows:local
 ```
 
-Then the following ones:
+Then execute these commands to prepare Prisma:
 
 ```bash
 npx prisma generate # Generates the DB types 
