@@ -1,8 +1,8 @@
 import { createRouter } from "@server/createRouter";
 import { TRPCError } from "@trpc/server";
 
-import { DeleteLinkSchema, LinksByTenantSchema, SaveLinkSchema } from "src/models/Link";
-import { deleteLink, getLinksPage, saveLink } from "@server/services/linksService";
+import { DeleteLinkSchema, LinkByIdSchema, LinksByTenantSchema, SaveLinkSchema } from "src/models/Link";
+import { deleteLink, getLinkById, getLinksPage, saveLink } from "@server/services/linksService";
 
 export const linkRouter = createRouter()
   .query('pageable.get-by-tenant', {
@@ -10,6 +10,13 @@ export const linkRouter = createRouter()
     resolve: async ({ ctx, input }) => {
       const pageableLinks = await getLinksPage(input);
       return pageableLinks;
+    },
+  })
+  .query('get-by-id', {
+    input: LinkByIdSchema,
+    resolve: async ({ ctx, input }) => {
+      const link = await getLinkById(input);
+      return link;
     },
   })
   .mutation('save-link', {

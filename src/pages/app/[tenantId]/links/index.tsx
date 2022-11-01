@@ -17,7 +17,8 @@ import Button from '@components/Button';
 import PageableTable from '@components/PageableTable';
 
 const Links: NextPage = () => {
-  const tenantId = getTenantIdFromRouter(useRouter());
+  const router = useRouter();
+  const tenantId = getTenantIdFromRouter(router);
 
   const [links, setLinks] = useState<Link[]>([]);
   const [pageParams, setPageParams] = useState({
@@ -63,6 +64,11 @@ const Links: NextPage = () => {
     }
   };
 
+  const handleEditLink = async (linkId: string) => {
+    console.log('router', router);
+    router.push(`${router.asPath}/mutate/${linkId}`);
+  };
+
   const handlePageChange = (page) => {
     setPageParams((oldValue) => {
       return { ...oldValue, currentPage: page };
@@ -98,7 +104,10 @@ const Links: NextPage = () => {
               { columnName: 'Dt. Criado', dataPropName: 'createdAt', render: (obj) => obj.createdAt.toLocaleDateString(), },
               { columnName: 'Dt.Atualizado', dataPropName: 'updatedAt', render: (obj) => obj.updatedAt.toLocaleDateString() },
               { columnName: 'Actions', dataPropName: 'Actions', render: (obj) => (
-                <Button onClick={() => handleDeleteLink(obj.id)}>Excluir</Button>
+                <>
+                  <Button onClick={() => handleEditLink(obj.id)}>Editar</Button>
+                  <Button onClick={() => handleDeleteLink(obj.id)}>Excluir</Button>
+                </>
               ) },
             ]}
             keyExtractor={(obj) => obj.id}

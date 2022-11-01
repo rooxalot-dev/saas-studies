@@ -1,32 +1,7 @@
+import prisma from "@libs/prisma";
 import { Link } from "@prisma/client";
-import { DeleteLinkDTO, LinksByTenantDTO, SaveLinkDTO } from "src/models/Link"
+import { DeleteLinkDTO, LinkByIdDTO, LinksByTenantDTO, SaveLinkDTO } from "src/models/Link"
 import { IPageable } from "src/models/Pageable";
-
-const countLinks = async (tenantId: string) => {
-  const count = await prisma.link.count({
-    where: {
-      tenantId: {
-        equals: tenantId,
-      }
-    },
-  });
-
-  return count;
-}
-
-const getLinks = async (tenantId: string, page: number, size: number) => {
-  const links = await prisma.link.findMany({
-    skip: (page - 1) * size,
-    take: size,
-    where: {
-      tenantId: {
-        equals: tenantId,
-      }
-    },
-  });
-
-  return links;
-}
 
 export const getLinksPage = async (input: LinksByTenantDTO): Promise<IPageable<Link>> => {
   const { tenantId } = input;
@@ -38,6 +13,32 @@ export const getLinksPage = async (input: LinksByTenantDTO): Promise<IPageable<L
 
   if (!size) {
     size = 5;
+  }
+
+  const countLinks = async (tenantId: string) => {
+    const count = await prisma.link.count({
+      where: {
+        tenantId: {
+          equals: tenantId,
+        }
+      },
+    });
+  
+    return count;
+  }
+  
+  const getLinks = async (tenantId: string, page: number, size: number) => {
+    const links = await prisma.link.findMany({
+      skip: (page - 1) * size,
+      take: size,
+      where: {
+        tenantId: {
+          equals: tenantId,
+        }
+      },
+    });
+  
+    return links;
   }
 
   const [count, links] = await Promise.all<[
@@ -57,9 +58,35 @@ export const getLinksPage = async (input: LinksByTenantDTO): Promise<IPageable<L
   return pageableLinks;
 };
 
+export const getLinkById = async (input: LinkByIdDTO): Promise<Link | null> => {
+  const { linkId } = input;
+  
+  const link = await prisma.link.findFirst({
+    where: {
+      id: linkId
+    }
+  });
+
+  return link;
+};
+
 export const saveLink = async (input: SaveLinkDTO) => {
-  const createdLink = await prisma.link.create({ data: input });
-  return createdLink;
+  let link: Link;
+
+  if (input.id) {
+    const editedLink = await prisma.link.update({
+      data: input,
+      where: {
+        id: input.id
+      }
+    })
+    link = editedLink;
+  } else {
+    const createdLink = await prisma.link.create({ data: input });
+    link = createdLink
+  }
+
+  return link;
 };
 
 export const deleteLink = async (input: DeleteLinkDTO) => {

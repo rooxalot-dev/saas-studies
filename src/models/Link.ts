@@ -1,5 +1,11 @@
 import { object, string, number, InferType } from 'yup';
 
+export const LinkByIdSchema = object({
+  linkId: string().required(),
+});
+
+export type LinkByIdDTO = InferType<typeof LinkByIdSchema>;
+
 export const LinksByTenantSchema = object({
   tenantId: string().required(),
   page: number().optional().nullable(true),
@@ -9,6 +15,7 @@ export const LinksByTenantSchema = object({
 export type LinksByTenantDTO = InferType<typeof LinksByTenantSchema>;
 
 export const SaveLinkSchema = object({
+  id: string().optional(),
   tenantId: string().required('TenantId obrigatório'),
   internalName: string().required('Nome interno obrigatório'),
   publicName: string().required('Nome público obrigatório'),
